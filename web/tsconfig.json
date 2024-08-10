@@ -16,7 +16,8 @@
     "noEmit": true,
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "noImplicitThis": false,
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

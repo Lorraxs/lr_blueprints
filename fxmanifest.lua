@@ -25,14 +25,22 @@ files {
 }
 
 ui_page 'web/build/index.html'
+--[[ ui_page 'http://localhost:5173' ]]
 
 shared_scripts {
   '@ox_lib/init.lua',
+  '@ProjectStarboy/imports.lua',
+  '@lr_supabase/main.lua',
   "locales/L.lua",
   "locales/lang/*.lua",
   "config.lua",
+  "exports.lua",
   "main.lua",
   "impl.lua",
+  "blueprint.lua",
+  "nodeFactory.lua",
+  "nodes.lua",
+  "nodes/**/*.lua",
 }
 
 

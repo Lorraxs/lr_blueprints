@@ -1,11 +1,12 @@
 import React, {createContext, useEffect, useState} from 'react';
-import {Box} from 'lr-components';
 import {isEnvBrowser} from './utils/misc';
 import {fetchNui} from './utils/fetchNui';
 import {DefaultUISetting, ISettingContext, UISetting} from './types';
 import stringd from 'stringd';
 import {observer} from 'mobx-react-lite';
 import {useMainService} from './services/app/main/main.service';
+import LiteGraphElement from './components/LiteGraph';
+import BluePrintList from './components/BluePrintList';
 
 export const SettingContext = createContext<ISettingContext>(DefaultUISetting);
 
@@ -35,11 +36,12 @@ const App = observer(() => {
       };
     }
   }, [setSetting]);
+
   return (
     <SettingContext.Provider value={{setting, setSetting, L}}>
       {mainService.show && (
-        <Box
-          width={'100vw'}
+        <div
+          /* width={'100vw'}
           height={'100vh'}
           top={0}
           left={0}
@@ -47,10 +49,17 @@ const App = observer(() => {
           justifyContent="center"
           alignItems="center"
           className="prose"
-          pointerEvents="none"
+          pointerEvents="all"
+          backgroundColor="rgba(0, 0, 0, 0.5)" */
+          className="h-screen w-screen flex gap-2 p-2 dark"
         >
-          APPS
-        </Box>
+          <div className="min-w-[200px] h-full bg-zinc-900/90 rounded-xl">
+            <BluePrintList />
+          </div>
+          <div className="  h-full rounded-xl ">
+            <LiteGraphElement />
+          </div>
+        </div>
       )}
     </SettingContext.Provider>
   );
