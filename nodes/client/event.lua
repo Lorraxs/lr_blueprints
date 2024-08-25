@@ -19,18 +19,18 @@ local EventNode = NodeFactory:extend({
   }
 })
 
-function EventNode:onStart()
+function EventNode:Execute()
   local isNet = self:getProperty("isNet")
   local eventName = self:getProperty("name")
   if isNet then
     self.cache.eventHandler = RegisterNetEvent(eventName, function(data)
       self:setOutputData("data", data)
-      self.blueprint:NextNode(self)
+      self:Next()
     end)
   else
     self.cache.eventHandler = AddEventHandler(eventName, function(data)
       self:setOutputData("data", data)
-      self.blueprint:NextNode(self)
+      self:Next()
     end)
   end
 end
@@ -74,11 +74,11 @@ function TriggerEventNode:Execute()
   if isNet then
     TriggerServerEvent(eventName, data)
     self:setOutputData("data", data)
-    self.blueprint:NextNode(self)
+    self:Next()
   else
     TriggerEvent(eventName, data)
     self:setOutputData("data", data)
-    self.blueprint:NextNode(self)
+    self:Next()
   end
 end
 

@@ -32,7 +32,7 @@ function Node:Execute()
   end
   local value = a + b
   self:setOutputData("A+B", value)
-  self.blueprint:NextNode(self)
+  self:Next()
 end
 
 Nodes:Create("fivem/shared/math/+", Node)

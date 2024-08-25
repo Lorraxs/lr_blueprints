@@ -54,7 +54,6 @@ class BluePrintsService implements AppContribution {
       ]);
     }else{
       const nodes = await fetchNui<NodeData[]>('loadNodes');
-      console.log('loadNodes', nodes);
       this.loadNodes(nodes);
     }
   }
@@ -125,7 +124,6 @@ class BluePrintsService implements AppContribution {
           (this as any).addOutput(input.name, input.type, input.extra_info);
         });
         properties?.forEach(prop => {
-          console.log('addProperty', prop);
           this.addProperty(prop.name, prop.default_value, prop.type, prop.extra_info);
         });
         widgets?.forEach(widget => {
@@ -159,10 +157,8 @@ class BluePrintsService implements AppContribution {
   async test(data: object) {
     if (!this.selectedBlueprint) return;
     if (isEnvBrowser()) {
-      console.log('test', this.selectedBlueprint.name, data);
       return data;
     }
-    console.log('test', this.selectedBlueprint.name, data);
     return fetchNui('test', {
       name: this.selectedBlueprint.name,
       data,
@@ -172,7 +168,6 @@ class BluePrintsService implements AppContribution {
   async save(data: object) {
     if (!this.selectedBlueprint) return;
     if (isEnvBrowser()) {
-      console.log(data)
       this.selectedBlueprint.data = data;
       return;
     }

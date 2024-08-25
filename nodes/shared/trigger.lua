@@ -19,8 +19,9 @@ local Node = NodeFactory:extend({
 })
 
 -- Node will be called when the blueprint is executed.
-function Node:onStart()
+function Node:Execute()
   self:setOutputData("trigger", true)
+  self:Next()
 end
 
 Nodes:Create("fivem/shared/utils/trigger", Node)

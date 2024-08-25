@@ -19,7 +19,7 @@ function Node:Execute()
   local to = self:getInputData("to")
   local distance = #(from - to)
   self:setOutputData("distance", distance)
-  self.blueprint:NextNode(self)
+  self:Next()
 end
 
 Nodes:Create('fivem/shared/math/vec3/distance', Node)

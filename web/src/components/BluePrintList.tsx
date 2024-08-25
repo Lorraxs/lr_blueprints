@@ -14,7 +14,6 @@ const BluePrintList = observer(() => {
       blueprint.name.toLowerCase().includes(throttledValue.toLowerCase()),
     );
   }, [throttledValue, BluePrintsService.data])
-  console.log(BluePrintsService.data);
   const serverBlueprints = filteredData.filter(blueprint => blueprint.side === 'server');
   const clientBlueprints = filteredData.filter(blueprint => blueprint.side === 'client');
   const sharedBlueprints = filteredData.filter(blueprint => blueprint.side === 'shared');

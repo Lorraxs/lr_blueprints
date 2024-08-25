@@ -29,7 +29,7 @@ function Node:Execute()
     output = tostring(value)
   end
   self:setOutputData("value", output)
-  self.blueprint:NextNode(self)
+  self:Next()
 end
 
 Nodes:Create("fivem/shared/utils/tostring", Node)

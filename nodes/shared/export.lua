@@ -16,20 +16,20 @@ local data = {
   },
   title = "Create export"
 }
-
+---@type NodeFactory
 local Node = NodeFactory:extend({
   data = data
 })
 
 -- Node will be called when the blueprint is executed.
-function Node:onStart()
+function Node:Execute()
   local exportName = self:getProperty("exportName")
   Exports(exportName, function(value)
     self:setOutputData("value", value)
     local p = promise.new()
     self:setOutputData("promise", p)
     self:setOutputData("trigger", true)
-    self.blueprint:NextNode(self)
+    self:Next()
     return Citizen.Await(p)
   end)
 end
@@ -105,7 +105,7 @@ function Node:Execute()
     return
   end
   self:setOutputData("value", response)
-  self.blueprint:NextNode(self)
+  self:Next()
 end
 
 Nodes:Create("fivem/shared/export/call", Node)

@@ -24,7 +24,7 @@ function Node:Execute()
   local ms = self:getProperty("ms")
   Citizen.Wait(ms)
   self:setOutputData("action", true)
-  self.blueprint:NextNode(self)
+  self:Next()
 end
 
 Nodes:Create('fivem/shared/utils/wait', Node)

@@ -49,7 +49,6 @@ local MarkerNode = NodeFactory:extend({
 
 function MarkerNode:Execute()
   local coords = self:getInputData("coords")
-  self.blueprint:NextNode(self)
   DrawMarker(
     self:getProperty("type"),
     coords.x, coords.y, coords.z,
@@ -74,6 +73,7 @@ function MarkerNode:Execute()
     self:getProperty("textureName"),
     self:getProperty("drawOnEnts")
   )
+  self:Next()
 end
 
 Nodes:Create('fivem/client/graphics/marker', MarkerNode)

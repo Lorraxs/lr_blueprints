@@ -31,7 +31,7 @@ function Node:Execute()
   else
     self:setOutputData('false', true)
   end
-  self.blueprint:NextNode(self)
+  self:Next()
 end
 
 Nodes:Create('fivem/shared/logic/IF', Node)

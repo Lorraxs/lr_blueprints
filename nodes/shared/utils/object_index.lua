@@ -26,7 +26,7 @@ function Node:Execute()
   local index = self:getInputData("index")
   local value = object[index]
   self:setOutputData("value", value)
-  self.blueprint:NextNode(self)
+  self:Next()
 end
 
 Nodes:Create("fivem/shared/utils/object_index", Node)

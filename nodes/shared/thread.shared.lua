@@ -1,3 +1,4 @@
+---@type NodeFactory
 local ThreadNode = NodeFactory:extend({
   data = {
     name = "fivem/shared/utils/thread",
@@ -15,13 +16,15 @@ local ThreadNode = NodeFactory:extend({
   }
 })
 
-function ThreadNode:onStart()
+function ThreadNode:Execute()
+  local nextStep = self.order + 1
   local interval = self:getProperty("interval")
-  self:LogInfo('ThreadNode:onStart %s', interval)
+  self:LogInfo('ThreadNode:Execute %s', interval)
   Citizen.CreateThread(function()
     while not self.destroyed do
       Wait(interval)
       self:setOutputData("action", true)
+      self:Next()
     end
   end)
 end

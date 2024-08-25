@@ -22,7 +22,7 @@ function Node:Execute()
   local value = self:getInputData("value")
   local boolean = not value
   self:setOutputData("boolean", boolean)
-  self.blueprint:NextNode(self)
+  self:Next()
 end
 
 Nodes:Create('fivem/shared/logic/NOT', Node)

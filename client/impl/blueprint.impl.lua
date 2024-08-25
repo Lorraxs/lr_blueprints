@@ -101,7 +101,6 @@ function Impl:NuiHandlers()
 end
 
 function Impl:AddBlueprint(data)
-  print(json.encode(data))
   self.blueprints[data.name] = Blueprint(data)
   return self.blueprints[data.name]
 end

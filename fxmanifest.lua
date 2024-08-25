@@ -28,6 +28,8 @@ ui_page 'web/build/index.html'
 --[[ ui_page 'http://localhost:5173' ]]
 
 shared_scripts {
+  "client/natives.lua",
+  "server/natives.lua",
   '@ox_lib/init.lua',
   '@ProjectStarboy/imports.lua',
   '@lr_supabase/main.lua',

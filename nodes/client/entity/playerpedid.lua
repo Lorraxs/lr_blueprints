@@ -15,7 +15,7 @@ local Node = NodeFactory:extend({
 
 function Node:Execute()
   self:setOutputData("ped", main.playerPed)
-  self.blueprint:NextNode(self)
+  self:Next()
 end
 
 Nodes:Create('fivem/client/entity/PlayerPedId', Node)

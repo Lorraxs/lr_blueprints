@@ -59,7 +59,6 @@ const LiteGraphElement = observer(() => {
   const canvasRef = useRef<LGraphCanvas | null>(null);
   const refCallback = (node: HTMLCanvasElement) => {
     if (node && !canvasRef.current) {
-      console.log(node);
       const graph = new LGraph();
       const canvas = new LGraphCanvas(node, graph);
       graphRef.current = graph;
@@ -73,7 +72,6 @@ const LiteGraphElement = observer(() => {
       const graph = graphRef.current;
       if (selectedBlueprint) {
         graph.configure(selectedBlueprint.data);
-        console.log(graph.links);
       }
     }
     LiteGraph.EVENT
@@ -98,7 +96,6 @@ const LiteGraphElement = observer(() => {
             className="bg-green-500 h-[40px] rounded-full p-2 px-4 hover:scale-110 flex justify-center items-center gap-2"
             onClick={async () => {
               const response = await inputDialog.getInputData();
-              console.log(response)
               if (response) {
                 BluePrintsService.addBlueprint(response.name, response.side);
               }
@@ -141,7 +138,6 @@ const LiteGraphElement = observer(() => {
             className="bg-green-500 h-[40px] rounded-full p-2 px-4 hover:scale-110 flex justify-center items-center gap-2"
             onClick={async () => {
               const response = await inputDialog.getInputData();
-              console.log(response)
               if (response) {
                 BluePrintsService.addBlueprint(response.name, response.side);
               }
@@ -157,7 +153,6 @@ const LiteGraphElement = observer(() => {
               confirmDialog.setDesc('Are you sure you want to run the test?');
               const response = await confirmDialog.confirm();
               if (response && graphRef.current) {
-                console.log(graphRef.current.links);
                 BluePrintsService.test(graphRef.current.serialize());
               }
             }}
@@ -176,7 +171,6 @@ const LiteGraphElement = observer(() => {
               }
               const response = await confirmDialog.confirm();
               if (response && graphRef.current) {
-                console.log(graphRef.current.links);
                 BluePrintsService.toggle();
               }
             }}

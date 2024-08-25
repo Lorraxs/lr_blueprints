@@ -1,3 +1,4 @@
+---@type NodeFactory
 local Node = NodeFactory:extend({
   data = {
     name = "fivem/shared/utils/const/number",
@@ -19,14 +20,10 @@ local Node = NodeFactory:extend({
   }
 })
 
-function Node:onStart()
+function Node:Execute()
   local value = self:getProperty("value")
   self:setOutputData("value", value)
-  self.blueprint:NextNode(self)
-end
-
-function Node:Execute()
-  self.blueprint:NextNode(self)
+  self:Next()
 end
 
 Nodes:Create('fivem/shared/utils/const/number', Node)
@@ -53,14 +50,10 @@ local Node = NodeFactory:extend({
   }
 })
 
-function Node:onStart()
+function Node:Execute()
   local value = self:getProperty("value")
   self:setOutputData("value", value)
-  self.blueprint:NextNode(self)
-end
-
-function Node:Execute()
-  self.blueprint:NextNode(self)
+  self:Next()
 end
 
 Nodes:Create('fivem/shared/utils/const/string', Node)
@@ -86,10 +79,10 @@ local Node = NodeFactory:extend({
   }
 })
 
-function Node:onStart()
+function Node:Execute()
   local value = self:getProperty("value")
   self:setOutputData("value", value)
-  self.blueprint:NextNode(self)
+  self:Next()
 end
 
 Nodes:Create('fivem/shared/utils/const/boolean', Node)
@@ -115,13 +108,9 @@ local Node = NodeFactory:extend({
   }
 })
 
-function Node:onStart()
+function Node:Execute()
   local value = self:getProperty("value")
   self:setOutputData("value", json.decode(value))
-end
-
-function Node:Execute()
-  self.blueprint:NextNode(self)
 end
 
 Nodes:Create('fivem/shared/utils/const/object', Node)
@@ -151,16 +140,12 @@ local Node = NodeFactory:extend({
   }
 })
 
-function Node:onStart()
+function Node:Execute()
   local x = self:getProperty("x")
   local y = self:getProperty("y")
   local z = self:getProperty("z")
   self:setOutputData("value", vector3(x, y, z))
-  self.blueprint:NextNode(self)
-end
-
-function Node:Execute()
-  self.blueprint:NextNode(self)
+  self:Next()
 end
 
 Nodes:Create('fivem/shared/utils/const/vec3', Node)

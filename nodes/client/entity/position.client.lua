@@ -28,7 +28,7 @@ function PositionNode:Execute()
   local ped = self:getInputData("ped")
   local coords = GetEntityCoords(ped)
   self:setOutputData("position", coords)
-  self.blueprint:NextNode(self)
+  self:Next()
 end
 
 Nodes:Create('fivem/client/entity/position', PositionNode)

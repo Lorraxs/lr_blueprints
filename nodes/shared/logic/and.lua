@@ -23,7 +23,7 @@ function Node:Execute()
   local value_2 = self:getInputData("value_2")
   local boolean = value_1 and value_2
   self:setOutputData("boolean", boolean)
-  self.blueprint:NextNode(self)
+  self:Next()
 end
 
 Nodes:Create('fivem/shared/logic/AND', Node)

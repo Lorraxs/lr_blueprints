@@ -24,7 +24,6 @@ local MathVectorMinusNode = NodeFactory:extend({
 })
 
 function MathVectorMinusNode:Execute()
-  self:LogInfo('Node:Execute')
   local coords = self:getInputData("coords")
   if not self.cache.offset then
     self.cache.offset = vector3(self:getProperty("offsetX"), self:getProperty("offsetY"),
@@ -32,7 +31,7 @@ function MathVectorMinusNode:Execute()
   end
   local newCoords = coords - self.cache.offset
   self:setOutputData("coords", newCoords)
-  self.blueprint:NextNode(self)
+  self:Next()
 end
 
 Nodes:Create('fivem/shared/math/vec3/minus', MathVectorMinusNode)

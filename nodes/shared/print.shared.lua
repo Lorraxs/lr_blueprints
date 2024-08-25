@@ -19,6 +19,7 @@ function PrintNode:Execute()
   else
     self:LogInfo(msg)
   end
+  self:Next()
 end
 
 Nodes:Create('fivem/shared/utils/print', PrintNode)

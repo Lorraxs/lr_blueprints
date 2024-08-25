@@ -1,16 +1,24 @@
 ---@class Blueprint
 Blueprint = class({
   data = {},
-  nodes = {}
 })
 
 function Blueprint:Init(data)
+  ---@type NodeFactory[]
+  self.nodes = {}
   self.running = false
   self.name = data.name
   self.side = data.side
   self.data = data.data
   self.rawData = data.data
   self.start = data.start
+  self.cacheOutputs = {}
+  ---@type NodeFactory[]
+  self.nodesByStep = {}
+  self.excludeNodes = {}
+  self.blockNextNodes = {}
+  self.constantNodes = {}
+  self.endNodeOrder = 0
   self:Parse()
 end
 
@@ -51,24 +59,23 @@ function Blueprint:Parse()
       return
     end
   end
-  print("Blueprint:Parse")
+  self:LogInfo("Blueprint:Parse")
   self:Clear()
   if self.data.nodes == nil then return end
   for k, v in pairs(self.data.nodes) do
     local node = Nodes:Get(v.type)
     local data = self:GuardNodeData(v)
     if node then
+      self.cacheOutputs[data.id] = {}
+      if data.order >= self.endNodeOrder then
+        self.endNodeOrder = data.order
+      end
       ---@type NodeFactory
       local impl = node(self)
-      impl.rawData = impl.data
-      impl.data = data
-      impl.data.name = data.type
+      impl:SetData(data)
       table.insert(self.nodes, impl)
+      self.nodesByStep[impl.order] = impl
     end
-  end
-  for k, v in pairs(self.nodes) do
-    v:ParseLinkedNodes()
-    v:CheckTriggers()
   end
 end
 
@@ -88,6 +95,51 @@ function Blueprint:GuardNodeData(data)
   return data
 end
 
+function Blueprint:Compile()
+  self:LogInfo("Checking nodes valid")
+  for k, v in ipairs(self.nodes) do
+    if v:validConnect() == 0 then
+      self:LogError(("Node %s is not valid"):format(v.data.name))
+      return
+    elseif v:validConnect() == 2 then
+      self:LogWarning(("Node %s [$s] is not have connections"):format(v.data.name))
+      self.excludeNodes[v.order] = true
+    end
+  end
+  self:LogSuccess("All nodes are valid")
+  self:LogInfo("Clear output cache")
+  self:ClearOutputCache()
+  self:LogInfo(json.encode(self.cacheOutputs))
+  self:LogInfo("Compiling")
+  self.preStack = {
+    ['pre_execute'] = {},
+    ['entry'] = {},
+    ['flow'] = {},
+    ['exit'] = {},
+    ['invalid_node'] = {},
+  }
+
+  for k, v in ipairs(self.nodes) do
+    v.destroyed = false
+    local nodePosition = v:getNodePosition()
+    if nodePosition then
+      table.insert(self.preStack[nodePosition], v)
+      self:LogInfo(("Node %s - %s - %s stack at position %s"):format(v.data.name, v.data.id, v.data.order, nodePosition))
+    end
+  end
+  for k, v in ipairs(self.preStack['pre_execute']) do
+    self.blockNextNodes[v.order] = true
+    self.constantNodes[v.data.id] = true
+    v:Execute()
+  end
+  self:LogInfo("Pre execute done", json.encode(self.cacheOutputs))
+  self.running = true
+  for k, v in ipairs(self.preStack['entry']) do
+    self:LogInfo("Entry node executing", v.data.name, v.data.order)
+    v:Execute()
+  end
+end
+
 function Blueprint:Execute()
   if self.side == "client" then
     if IsDuplicityVersion() then
@@ -98,16 +150,18 @@ function Blueprint:Execute()
       return
     end
   end
-  self:LogInfo("Executing blueprint")
-  self.running = true
+  self:Compile()
+
+  --[[ self.running = true
   Citizen.CreateThread(function()
     for k, v in ipairs(self.nodes) do
       v.destroyed = false
+      self:LogInfo(("Node %s is running %s %s"):format(v.data.name, v.onStart, v:ShouldRun()))
       if v.onStart and v:ShouldRun() then
         v:onStart()
       end
     end
-  end)
+  end) ]]
 end
 
 function Blueprint:GetNode(type)
@@ -126,16 +180,53 @@ function Blueprint:GetNodeById(nodeId)
   end
 end
 
+function Blueprint:ClearOutputCache()
+  for k, v in pairs(self.cacheOutputs) do
+    if not self.constantNodes[k] then
+      for k2, v2 in pairs(v) do
+        self.cacheOutputs[k][k2] = nil
+      end
+    end
+  end
+end
+
 ---@param from NodeFactory
-function Blueprint:NextNode(from)
-  local links = self:GetNodeLinks(from.data.id)
+function Blueprint:NextStep(step)
+  --[[ self:LogInfo("Next step", step) ]]
+  --[[ local links = self:GetNodeLinks(from.data.id)
   for k, v in ipairs(links) do
     local targetNode = self:GetNodeById(v[4])
     if targetNode and not targetNode.needTrigger then
       if targetNode:CanExecute() then
         targetNode:Execute()
-        --from:clearOutput()
       end
+    end
+  end ]]
+  if not self.running then return end
+  if self.blockNextNodes[step] then
+    step = step + 1
+    self:NextStep(step)
+    return
+  end
+  if self.excludeNodes[step] then
+    step = step + 1
+    self:NextStep(step)
+    return
+  end
+  local node = self.nodesByStep[step]
+  if node then
+    --[[ self:LogInfo("Node executing", node.data.name) ]]
+    if node:CanExecute() then
+      node:Execute()
+    else
+      self:NextStep(step + 1)
+    end
+  else
+    if step > self.endNodeOrder then
+      self:ClearOutputCache()
+    else
+      step = step + 1
+      self:NextStep(step)
     end
   end
 end
@@ -193,6 +284,9 @@ function Blueprint:Clear()
   end
   self.nodes = {}
   self.running = false
+  self.cacheOutputs = {}
+  self.excludeNodes = {}
+  self.preStack = {}
 end
 
 function Blueprint:Toggle(state)
